@@ -20,11 +20,13 @@ export default class extends Phaser.State {
         x: this.world.centerX,
         y: this.world.centerY,
         maxhp: 100,
-        asset: 'mushroom',
+        asset: 'dude',
         cursors: this.cursors
     })
 
     this.game.add.existing(this.player)
+
+
 
 
     //const bannerText = 'Phaser + ES6 + Webpack'
