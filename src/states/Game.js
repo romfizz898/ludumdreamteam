@@ -3,6 +3,7 @@ import Phaser from 'phaser'
 
 import PlayerObject from '../sprites/PlayerObject'
 import Washer from '../sprites/Washer'
+import Gates from '../sprites/Gates'
 import BaseObject from "../sprites/BaseObject"
 
 export default class extends Phaser.State {
@@ -32,8 +33,16 @@ export default class extends Phaser.State {
           asset: 'mushroom'
       })
 
+      this.gates = new Gates({
+          game: this.game,
+          x: this.world.width,
+          y: this.world.centerY,
+          asset: 'mushroom'
+      })
+
     this.game.add.existing(this.player)
     this.game.add.existing(this.washer)
+    this.game.add.existing(this.gates)
 
 
 
@@ -52,11 +61,26 @@ export default class extends Phaser.State {
 
   update () {
       let playerHitWasher = this.game.physics.arcade.collide(this.player, this.washer, this.playerHitWasherTrigger, null, this)
+      let playerHitGates = this.game.physics.arcade.collide(this.player, this.gates, this.playerHitGatesTrigger, null, this)
   }
 
   playerHitWasherTrigger () {
     this.player.isWasher = true
     this.washer.destroy()
+  }
+
+  playerHitGatesTrigger () {
+      console.log(this.player.isWasher)
+      if (this.player.isWasher) {
+          this.player.isWasher = false
+          this.washer = new Washer({
+              game: this.game,
+              x: this.world.centerX,
+              y: this.world.centerY,
+              asset: 'mushroom'
+          })
+          this.game.add.existing(this.washer)
+      }
   }
 
   render() {
