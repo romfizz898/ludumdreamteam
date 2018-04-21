@@ -2,6 +2,7 @@
 import Phaser from 'phaser'
 
 import PlayerObject from '../sprites/PlayerObject'
+import Washer from '../sprites/Washer'
 import BaseObject from "../sprites/BaseObject"
 
 export default class extends Phaser.State {
@@ -17,14 +18,22 @@ export default class extends Phaser.State {
 
     this.player = new PlayerObject({
         game: this.game,
-        x: this.world.centerX,
-        y: this.world.centerY,
+        x: 40,
+        y: this.world.centerY/2,
         maxhp: 100,
         asset: 'dude',
         cursors: this.cursors
     })
 
+      this.washer = new Washer({
+          game: this.game,
+          x: this.world.centerX,
+          y: this.world.centerY,
+          asset: 'mushroom'
+      })
+
     this.game.add.existing(this.player)
+    this.game.add.existing(this.washer)
 
 
 
@@ -42,7 +51,12 @@ export default class extends Phaser.State {
   }
 
   update () {
+      let playerHitWasher = this.game.physics.arcade.collide(this.player, this.washer, this.playerHitWasherTrigger, null, this)
+  }
 
+  playerHitWasherTrigger () {
+    this.player.isWasher = true
+    this.washer.destroy()
   }
 
   render() {

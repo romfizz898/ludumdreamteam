@@ -11,6 +11,5 @@ export default class extends Phaser.Sprite {
   }
 
   update () {
-    //this.angle += 1
   }
 }
