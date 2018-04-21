@@ -20,7 +20,7 @@ export default class extends Phaser.State {
     this.player = new PlayerObject({
         game: this.game,
         x: 40,
-        y: this.world.centerY/2,
+        y: this.world.centerY,
         maxhp: 100,
         asset: 'dude',
         cursors: this.cursors
@@ -28,7 +28,7 @@ export default class extends Phaser.State {
 
       this.washer = new Washer({
           game: this.game,
-          x: this.world.centerX,
+          x: 300,
           y: this.world.centerY,
           asset: 'mushroom'
       })
@@ -70,12 +70,11 @@ export default class extends Phaser.State {
   }
 
   playerHitGatesTrigger () {
-      console.log(this.player.isWasher)
       if (this.player.isWasher) {
           this.player.isWasher = false
           this.washer = new Washer({
               game: this.game,
-              x: this.world.centerX,
+              x: 300,
               y: this.world.centerY,
               asset: 'mushroom'
           })
