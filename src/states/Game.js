@@ -8,6 +8,7 @@ import BaseObject from "../sprites/BaseObject"
 
 export default class extends Phaser.State {
 
+
   init() { }
   preload() { 
   }
@@ -50,14 +51,15 @@ export default class extends Phaser.State {
 
     this.enemyplayers = this.game.add.group()
 
-    let field = this.game.add.tileSprite(0, 0, 8000, 1.2 * this.game.height, 'sky')
-
     this.game.add.existing(this.player)
     this.game.add.existing(this.washer)
-
-
-    this.player.animations.add('hold', [1, 2], 2, true)
     this.game.add.existing(this.gates)
+
+    this.player.animations.add('left', [0, 1, 2, 3, 4, 5, 6], 3, true)
+    this.player.animations.add('right', [7, 8, 9, 10, 11, 12], 3, true)
+    this.player.animations.add('hold', [13, 14], 2, true)
+
+    cursors = game.input.keyboard.createCursorKeys();
 
 
     //const bannerText = 'Phaser + ES6 + Webpack'
@@ -69,15 +71,20 @@ export default class extends Phaser.State {
 
     banner.padding.set(10, 16)
     banner.anchor.setTo(0.5) */
-
   }
+
+
 
   update () {
       let playerHitWasher = this.game.physics.arcade.collide(this.player, this.washer, this.playerHitWasherTrigger, null, this)
 
-      this.player.animations.play('hold')
-
       let playerHitGates = this.game.physics.arcade.collide(this.player, this.gates, this.playerHitGatesTrigger, null, this)
+
+      
+      //@todo annimations left-right
+      this.player.animations.play('hold');
+      
+
   }
 
   playerHitWasherTrigger () {
