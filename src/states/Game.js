@@ -48,6 +48,9 @@ export default class extends Phaser.State {
     })
 
 
+    this.enemyplayers = this.game.add.group()
+
+    let field = this.game.add.tileSprite(0, 0, 8000, 1.2 * this.game.height, 'sky')
 
     this.game.add.existing(this.player)
     this.game.add.existing(this.washer)
