@@ -19,6 +19,11 @@ export default class extends Phaser.State {
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
     this.cursors = this.game.input.keyboard
 
+    let backGround = this.game.add.tileSprite(0,0,1480,840,'field')
+    backGround.scale.x = this.game.width / backGround.width
+    backGround.scale.y = this.game.height / backGround.height
+
+
     this.player = new PlayerObject({
         game: this.game,
         x: 40,
@@ -42,7 +47,7 @@ export default class extends Phaser.State {
         asset: 'mushroom'
     })
 
-    let field = this.game.add.tileSprite(0, 0, 8000, 1.2 * this.game.height, 'sky')
+
 
     this.game.add.existing(this.player)
     this.game.add.existing(this.washer)
