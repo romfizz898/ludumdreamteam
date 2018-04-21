@@ -6,7 +6,9 @@ export default class extends BaseObject {
         super({ game, x, y, maxhp, asset })
 
         this.game.physics.enable(this, Phaser.Physics.ARCADE)
+        this.body.collideWorldBounds = true
         this.cursors = cursors
+        this.isWasher = false
     }
 
     addControls() {
