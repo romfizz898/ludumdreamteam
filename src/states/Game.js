@@ -44,9 +44,6 @@ export default class extends Phaser.State {
     this.game.add.existing(this.washer)
     this.game.add.existing(this.gates)
 
-
-
-
     //const bannerText = 'Phaser + ES6 + Webpack'
     /*let banner = this.add.text(this.world.centerX, this.game.height - 80, bannerText, {
       font: '40px Bangers',
@@ -67,6 +64,7 @@ export default class extends Phaser.State {
   playerHitWasherTrigger () {
     this.player.isWasher = true
     this.washer.destroy()
+    this.addWishertoObject(this.player)
   }
 
   playerHitGatesTrigger () {
@@ -79,7 +77,12 @@ export default class extends Phaser.State {
               asset: 'mushroom'
           })
           this.game.add.existing(this.washer)
+          this.player.wisherpointer.destroy()
       }
+  }
+
+  addWishertoObject (object) {
+    object.wisherpointer = this.game.add.sprite(object.x, object.y - 40, 'mushroom')
   }
 
   render() {
