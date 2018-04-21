@@ -8,7 +8,8 @@ import BaseObject from "../sprites/BaseObject"
 export default class extends Phaser.State {
 
   init() { }
-  preload() { }
+  preload() { 
+  }
 
   create() {
     this.game.world.setBounds(0, 0, this.game.width, this.game.height)
@@ -35,7 +36,7 @@ export default class extends Phaser.State {
     this.game.add.existing(this.player)
     this.game.add.existing(this.washer)
 
-
+    this.player.animations.add('hold', [1, 2], 2, true)
 
 
     //const bannerText = 'Phaser + ES6 + Webpack'
@@ -52,6 +53,7 @@ export default class extends Phaser.State {
 
   update () {
       let playerHitWasher = this.game.physics.arcade.collide(this.player, this.washer, this.playerHitWasherTrigger, null, this)
+      this.player.animations.play('hold')
   }
 
   playerHitWasherTrigger () {

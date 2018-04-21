@@ -14,7 +14,7 @@ export default class extends Phaser.State {
     // load your assets
     //
     this.load.image('mushroom', 'assets/images/mushroom2.png')
-    this.load.image('dude', 'assets/images/main-hero.gif')
+    this.load.spritesheet('dude', 'assets/images/main-enemy.png', 32, 32)
   }
 
   create () {
