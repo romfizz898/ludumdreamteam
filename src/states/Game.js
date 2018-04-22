@@ -121,7 +121,10 @@ export default class extends Phaser.State {
       }
 
       for (let i = 0; i < this.enemygoblins.length; ++i) {
-          this.game.physics.arcade.overlap(this['enemygoblin' + i], this.player, this.playerEnemyCollideTrigger, null, this)
+          this.game.physics.arcade.overlap(this['enemygoblin' + i], this.player, this.playerGoblinCollideTrigger, null, this)
+          for (let j = 0; j < this.max_number_of_players; ++j) {
+              this.game.physics.arcade.overlap(this['enemygoblin' + i], this['enemyplayer' + j], this.enemyGoblinCollideTrigger, null, this)
+          }
       }
 
       //@todo annimations left-right
@@ -169,6 +172,28 @@ export default class extends Phaser.State {
         }
     }
 
+    enemyGoblinCollideTrigger (goblin, enemy) {
+        if (this.game.time.now > goblin.nexthit) {
+            enemy.health -= 1
+            goblin.updateNextHit()
+            if (enemy.health <= 0) {
+                if (enemy.isWasher) {
+                    enemy.isWasher = false
+                    this.washer = new Washer({
+                        game: this.game,
+                        x: 300,
+                        y: this.world.centerY,
+                        asset: 'mushroom'
+                    })
+                    this.game.add.existing(this.washer)
+                    enemy.wisherpointer.destroy()
+                }
+                enemy.kill()
+                enemy.isAlive = false
+            }
+        }
+    }
+
     playerEnemyCollideTrigger (enemyplayer, player) {
         if (player.isWasher && this.game.time.now > enemyplayer.nexthit) {
             enemyplayer.isWasher = true
@@ -186,7 +211,13 @@ export default class extends Phaser.State {
     }
 
     playerGoblinCollideTrigger (goblin, player) {
-        player
+        if (this.game.time.now > goblin.nexthit) {
+            player.health -= 1
+            goblin.updateNextHit()
+            if (player.health <= 0) {
+                player.kill()
+            }
+        }
     }
 
     spawnNewGoblin () {

@@ -12,6 +12,7 @@ export default class extends BaseObject {
         this.isWasher = false
         this.enemyVelocity = 250
         this.nexthit = 5
+        this.isAlive = true
     }
 
     moveEnemytoPlayer () {

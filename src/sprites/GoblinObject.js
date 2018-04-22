@@ -12,10 +12,10 @@ export default class extends BaseObject {
         this.body.collideWorldBounds = true
         this.body.checkCollision.up = false
         this.body.checkCollision.down = false
-        this.nexthit = 5
+        this.nexthit = 30
         this.body.immovable = true
 
-        this.enemyVelocity = 175
+        this.enemyVelocity = 45
 
     }
 
@@ -29,17 +29,21 @@ export default class extends BaseObject {
         this.body.velocity.x = 0
         this.body.velocity.y = 0
 
-        let distance = this.getDistanceBetweenObjects(this.body, this.player.body)
-        if (distance < min_distance) {
-            min_distance = distance
-            vector = this.getVectorBetweenObjects (this.body, this.player.body)
+        if (this.player.isAlive) {
+            let distance = this.getDistanceBetweenObjects(this.body, this.player.body)
+            if (distance < min_distance) {
+                min_distance = distance
+                vector = this.getVectorBetweenObjects (this.body, this.player.body)
+            }
         }
 
         for (let i = 0; i < this.scene.max_number_of_players; ++i) {
-            let distance = this.getDistanceBetweenObjects(this.body, this.scene['enemyplayer' + i].body)
-            if (distance < min_distance) {
-                min_distance = distance
-                vector = this.getVectorBetweenObjects (this.body, this.scene['enemyplayer' + i].body)
+            if (this.scene['enemyplayer' + i].isAlive) {
+                let distance = this.getDistanceBetweenObjects(this.body, this.scene['enemyplayer' + i].body)
+                if (distance < min_distance) {
+                    min_distance = distance
+                    vector = this.getVectorBetweenObjects (this.body, this.scene['enemyplayer' + i].body)
+                }
             }
         }
 
@@ -68,5 +72,9 @@ export default class extends BaseObject {
         let dy = object1.y - object2.y
 
         return Math.sqrt(dx * dx + dy * dy)
+    }
+
+    updateNextHit () {
+        this.nexthit = this.game.time.now + 300
     }
 }
