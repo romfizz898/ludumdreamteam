@@ -22,7 +22,7 @@ export default class extends Phaser.State {
     this.load.image('arrow-down', 'assets/images/arrow-down.png')
     this.load.image('goal', 'assets/images/goal.png')
 
-    this.load.spritesheet('goblin', 'assets/images/goblins-dev.png', 256, 86)
+    this.load.spritesheet('goblin', 'assets/images/goblins1.png', 60, 84)
     this.load.spritesheet('washer-move', 'assets/images/washer-move.png', 64, 64)
     this.load.spritesheet('dude', 'assets/images/hero-big.png', 96, 96)
     this.load.spritesheet('enemy', 'assets/images/enemy-big.png', 96, 96)
