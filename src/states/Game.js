@@ -5,7 +5,8 @@ import PlayerObject from '../sprites/PlayerObject'
 import Washer from '../sprites/Washer'
 import Gates from '../sprites/Gates'
 import BaseObject from "../sprites/BaseObject"
-import EnemyPlayer from "../sprites/EnemyPlayer";
+import EnemyPlayer from "../sprites/EnemyPlayer"
+import GoblinObject from "../sprites/GoblinObject"
 
 export default class extends Phaser.State {
 
@@ -20,6 +21,7 @@ export default class extends Phaser.State {
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
     this.cursors = this.game.input.keyboard
+    this.timetoSpawn = 50
 
     let backGround = this.game.add.tileSprite(0,0,1480,840,'field')
     backGround.scale.x = this.game.width / backGround.width
@@ -30,7 +32,7 @@ export default class extends Phaser.State {
         game: this.game,
         x: 40,
         y: this.world.centerY,
-        maxhp: 100,
+        maxhp: 10,
         asset: 'dude',
         cursors: this.cursors
     })
@@ -50,19 +52,36 @@ export default class extends Phaser.State {
     })
 
     this.max_number_of_players = 10
+    this.max_number_of_goblins = 5
 
-    this.enemyplayers = []
+    this.enemygoblins = []
+    this.next_goblin_spawn = 5000
+
     for (let i = 0; i < this.max_number_of_players; ++i) {
         this["enemyplayer" + i] = new EnemyPlayer({
             game: this.game,
             x: this.game.world.randomX,
             y: this.game.world.randomY,
-            maxhp: 10,
+            maxhp: 3,
             asset: 'dude',
             player: this.player,
             scene: this
         })
         this.game.add.existing(this['enemyplayer' + i])
+    }
+
+    for (let i = 0; i < 2; ++i) {
+      this["enemygoblin" + i] = new GoblinObject({
+          game: this.game,
+          x: this.game.world.randomX,
+          y: this.game.world.randomY,
+          maxhp: 3,
+          asset: 'mushroom',
+          player: this.player,
+          scene: this
+      })
+      this.game.add.existing(this["enemygoblin" + i])
+      this.enemygoblins.push(this['enemygoblin' + i])
     }
 
     //let field = this.game.add.tileSprite(0, 0, 8000, 1.2 * this.game.height, 'sky')
@@ -92,14 +111,17 @@ export default class extends Phaser.State {
   update () {
 
       let playerHitWasher = this.game.physics.arcade.collide(this.player, this.washer, this.playerHitWasherTrigger, null, this)
-
       let playerHitGates = this.game.physics.arcade.collide(this.player, this.gates, this.playerHitGatesTrigger, null, this)
-
+      this.spawnNewGoblin()
 
       for (let i = 0; i < this.max_number_of_players; ++i) {
           this.game.physics.arcade.overlap(this['enemyplayer' + i], this.washer, this.enemyHitWasherTrigger, null, this)
           this.game.physics.arcade.overlap(this['enemyplayer' + i], this.gates, this.enemyHitGatesTrigger, null, this)
           this.game.physics.arcade.overlap(this['enemyplayer' + i], this.player, this.playerEnemyCollideTrigger, null, this)
+      }
+
+      for (let i = 0; i < this.enemygoblins.length; ++i) {
+          this.game.physics.arcade.overlap(this['enemygoblin' + i], this.player, this.playerEnemyCollideTrigger, null, this)
       }
 
       //@todo annimations left-right
@@ -163,22 +185,31 @@ export default class extends Phaser.State {
         }
     }
 
-    generateEnemyPlayers (number_of_enemies) {
-      for (let i = 0; i < number_of_enemies; ++i) {
-        this.enemyplayer = new EnemyPlayer({
-            game: this.game,
-            x: this.game.world.randomX,
-            y: this.game.world.randomY,
-            maxhp: 10,
-            asset: 'dude',
-            player: this.player,
-            scene: this
-        })
-        this.enemyplayers.push(this.enemyplayer)
-        this.game.add.existing(this.enemyplayer)
-      }
-
+    playerGoblinCollideTrigger (goblin, player) {
+        player
     }
+
+    spawnNewGoblin () {
+      if (this.game.time.now > this.next_goblin_spawn && this.enemygoblins.length < this.max_number_of_goblins) {
+          this.next_goblin_spawn = this.game.time.now + 3000
+          this['enemygoblin' + this.enemygoblins.length] = new GoblinObject({
+              game: this.game,
+              x: this.game.world.randomX,
+              y: this.game.world.randomY,
+              maxhp: 10,
+              asset: 'mushroom',
+              player: this.player,
+              scene: this
+          })
+
+          this['enemygoblin' + this.enemygoblins.length].enemyVelocity =
+              this['enemygoblin' + this.enemygoblins.length].enemyVelocity + this.enemygoblins.length * 10
+
+
+          this.game.add.existing(this['enemygoblin' + this.enemygoblins.length])
+          this.enemygoblins.push(this['enemygoblin' + this.enemygoblins.length])
+      }
+   }
 
   addWishertoObject (object) {
     object.wisherpointer = this.game.add.sprite(object.body.x, object.body.y - 60, 'mushroom')
