@@ -17,11 +17,18 @@ export default class extends Phaser.State {
     this.load.image('field', 'assets/images/main-field.png')
     this.load.image('progress1', 'assets/images/progress_1.png')
     this.load.image('progress2', 'assets/images/progress_2.png')
+<<<<<<< HEAD
     this.load.image('washer', 'assets/images/washer.png')
 
     this.load.spritesheet('washer-move', 'assets/images/washer-move.png', 64, 64)
     this.load.spritesheet('dude', 'assets/images/hero-big.png', 96, 96)
     this.load.spritesheet('enemy', 'assets/images/enemy-big.png', 96, 96)
+=======
+
+    this.load.spritesheet('dude', 'assets/images/enemy-big.png', 96, 96)
+
+
+>>>>>>> fix
   }
 
   create () {
