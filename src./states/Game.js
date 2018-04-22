@@ -25,10 +25,17 @@ export default class extends Phaser.State {
     backGround.scale.x = this.game.width / backGround.width
     backGround.scale.y = this.game.height / backGround.height
 
-    this.score = 0;
-    this.scoreText = this.game.add.text(0.8 * this.game.width, 0.1 * this.game.height, 'Score: ' + this.score,
+      this.add.text(0.75 * this.game.width,  0.9 * this.game.height, 'HP',
+          { font: '45px Arial', fill: '#ffffff', align: 'center' }).fixedToCamera = true
+
+    this.score = 0
+    this.scoreText = this.game.add.text(0.6 * this.game.width, 0.9 * this.game.height, 'Score: ' + this.score,
           { font: '45px Arial', fill: '#ffffff', align: 'center' })
     this.scoreText.fixedToCamera = true
+
+    this.add.sprite(0.8 * this.game.width, 0.91 * this.game.height, 'progress1').fixedToCamera = true
+    this.hpProgressBar = this.game.add.sprite(0.8 * this.game.width, 0.91 * this.game.height, 'progress2')
+    this.hpProgressBar.fixedToCamera = true
 
     this.player = new PlayerObject({
         game: this.game,
@@ -175,6 +182,8 @@ export default class extends Phaser.State {
             })
             this.game.add.existing(this.washer)
             enemyplayer.wisherpointer.destroy()
+            this.score--
+            this.scoreText.setText('Score: ' + this.score)
         }
     }
 
@@ -219,6 +228,7 @@ export default class extends Phaser.State {
     playerGoblinCollideTrigger (goblin, player) {
         if (this.game.time.now > goblin.nexthit) {
             player.health -= 1
+            this.updateProgressBar()
             goblin.updateNextHit()
             if (player.health <= 0) {
                 player.kill()
@@ -266,6 +276,10 @@ export default class extends Phaser.State {
            }
        }
    }
+
+    updateProgressBar () {
+        this.hpProgressBar.scale.x = this.player.health / this.player.maxHealth
+    }
 
   addWishertoObject (object) {
     object.wisherpointer = this.game.add.sprite(object.body.x, object.body.y, 'arrow-down')
