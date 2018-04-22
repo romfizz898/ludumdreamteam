@@ -41,17 +41,18 @@ export default class extends BaseObject {
     }
 
     randomIdle () {
-        if (this.hasOwnProperty('randompoint') && this.getDistanceBetweenObjects(this.body, this.randompoint) > 3) {
+        if (this.hasOwnProperty('randompoint') && this.getDistanceBetweenObjects(this.body, this.randompoint) > 50) {
             let vector = this.getVectorBetweenObjects(this.body, this.randompoint)
             this.body.velocity.x = this.enemyVelocity * vector.x
             this.body.velocity.y = this.enemyVelocity * vector.y
         }
         else {
             this.randompoint = {}
-            this.randompoint.x = this.game.world.randomX
-            this.randompoint.y = this.game.world.randomY
+            this.randompoint.x = 0.9 * this.game.world.randomX
+            this.randompoint.y = 0.9 * this.game.world.randomY
         }
     }
+
 
     updateNextHit () {
         this.nexthit = this.game.time.now + 300
