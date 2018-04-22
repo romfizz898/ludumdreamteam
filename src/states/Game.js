@@ -16,6 +16,8 @@ export default class extends Phaser.State {
 
   create() {
 
+    this.audio = this.add.audio('stadion').loopFull()
+    this.audio = this.add.audio('nhl').loopFull()
     this.game.world.setBounds(0, 0, this.game.width, this.game.height)
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -60,7 +62,7 @@ export default class extends Phaser.State {
         asset: 'goal'
     })
 
-    this.max_number_of_players = 10
+    this.max_number_of_players = 6
     this.max_number_of_goblins = 5
 
     this.enemygoblins = []
@@ -139,7 +141,7 @@ export default class extends Phaser.State {
       }
 
       //@todo annimations left-right
-      this.player.animations.play('hold')
+      //this.player.animations.play('hold')
   }
 
   playerHitWasherTrigger () {
@@ -231,7 +233,18 @@ export default class extends Phaser.State {
             this.updateProgressBar()
             goblin.updateNextHit()
             if (player.health <= 0) {
+
+                localStorage.setItem('score', this.score)
+                if (localStorage.getItem('highscore') === null) {
+                    localStorage.setItem('highscore', this.score)
+                }
+                else if (this.score > localStorage.getItem('highscore')) {
+                    localStorage.setItem('highscore', this.score)
+                }
+
                 player.kill()
+                this.state.start('GameOver')
+                this.audio.stop()
             }
         }
     }

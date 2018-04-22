@@ -49,7 +49,17 @@ export default class extends BaseObject {
         }
     }
 
+    addAnimation() {
+        if (this.body.velocity.x > 0) {
+            this.animations.play('right')
+        }
+        else {
+            this.animations.play('left')
+        }
+    }
+
     update () {
         this.addControls()
+        this.addAnimation()
     }
 }
