@@ -21,7 +21,7 @@ export default class extends Phaser.State {
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
     this.cursors = this.game.input.keyboard
 
-    let backGround = this.game.add.tileSprite(0,0,1480,840,'field')
+    let backGround = this.game.add.tileSprite(0,0,1136,737,'field')
     backGround.scale.x = this.game.width / backGround.width
     backGround.scale.y = this.game.height / backGround.height
 
@@ -39,7 +39,7 @@ export default class extends Phaser.State {
         game: this.game,
         x: 300,
         y: this.world.centerY,
-        asset: 'mushroom'
+        asset: 'washer'
     })
 
     this.gates = new Gates({
@@ -58,7 +58,7 @@ export default class extends Phaser.State {
             x: this.game.world.randomX,
             y: this.game.world.randomY,
             maxhp: 10,
-            asset: 'dude',
+            asset: 'enemy',
             player: this.player,
             scene: this
         })
@@ -105,6 +105,8 @@ export default class extends Phaser.State {
       //@todo annimations left-right
       this.player.animations.play('hold')
 
+      //this.wisherpointer.animations.play('washer-move')
+
   }
 
   playerHitWasherTrigger () {
@@ -120,7 +122,7 @@ export default class extends Phaser.State {
               game: this.game,
               x: 300,
               y: this.world.centerY,
-              asset: 'mushroom'
+              asset: 'washer'
           })
           this.game.add.existing(this.washer)
           this.player.wisherpointer.destroy()
@@ -140,7 +142,7 @@ export default class extends Phaser.State {
                 game: this.game,
                 x: 300,
                 y: this.world.centerY,
-                asset: 'mushroom'
+                asset: 'washer'
             })
             this.game.add.existing(this.washer)
             enemyplayer.wisherpointer.destroy()
@@ -177,11 +179,15 @@ export default class extends Phaser.State {
         this.enemyplayers.push(this.enemyplayer)
         this.game.add.existing(this.enemyplayer)
       }
-
     }
 
   addWishertoObject (object) {
-    object.wisherpointer = this.game.add.sprite(object.body.x, object.body.y - 60, 'mushroom')
+
+    object.wisherpointer = this.game.add.sprite(object.body.x, object.body.y, 'washer-move')
+
+    
+    //object.wisherpointer.animations.add('washer', [0,1], 10, true)
+    //object.wisherpointer.animations.play('washer', 3, true)
   }
 
   render() {
