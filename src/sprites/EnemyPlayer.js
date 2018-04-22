@@ -12,6 +12,7 @@ export default class extends BaseObject {
         this.isWasher = false
         this.enemyVelocity = 250
         this.nexthit = 5
+        this.isAlive = true
     }
 
     moveEnemytoPlayer () {
@@ -100,7 +101,17 @@ export default class extends BaseObject {
         return Math.sqrt(dx * dx + dy * dy)
     }
 
+    addAnimation() {
+        if (this.body.velocity.x > 0) {
+            this.animations.play('right')
+        }
+        else {
+            this.animations.play('left')
+        }
+    }
+
     update () {
         this.moveEnemy()
+        this.addAnimation()
     }
 }

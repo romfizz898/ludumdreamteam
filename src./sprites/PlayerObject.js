@@ -9,6 +9,7 @@ export default class extends BaseObject {
         this.body.collideWorldBounds = true
         this.cursors = cursors
         this.isWasher = false
+        this.isAlive = true
     }
 
     addControls() {
