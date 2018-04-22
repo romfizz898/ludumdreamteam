@@ -10,7 +10,6 @@ import GoblinObject from "../sprites/GoblinObject"
 
 export default class extends Phaser.State {
 
-
   init() { }
   preload() {
   }
@@ -21,11 +20,15 @@ export default class extends Phaser.State {
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
     this.cursors = this.game.input.keyboard
-    this.timetoSpawn = 50
 
     let backGround = this.game.add.tileSprite(0,0,1480,840,'field')
     backGround.scale.x = this.game.width / backGround.width
     backGround.scale.y = this.game.height / backGround.height
+
+    this.score = 0;
+    this.scoreText = this.game.add.text(0.8 * this.game.width, 0.1 * this.game.height, 'Score: ' + this.score,
+          { font: '45px Arial', fill: '#ffffff', align: 'center' })
+    this.scoreText.fixedToCamera = true
 
 
     this.player = new PlayerObject({
@@ -56,6 +59,7 @@ export default class extends Phaser.State {
 
     this.enemygoblins = []
     this.next_goblin_spawn = 5000
+    this.next_enemy_spawn = 1000
 
     for (let i = 0; i < this.max_number_of_players; ++i) {
         this["enemyplayer" + i] = new EnemyPlayer({
@@ -84,8 +88,6 @@ export default class extends Phaser.State {
       this.enemygoblins.push(this['enemygoblin' + i])
     }
 
-    //let field = this.game.add.tileSprite(0, 0, 8000, 1.2 * this.game.height, 'sky')
-
     this.game.add.existing(this.player)
     this.game.add.existing(this.washer)
     this.game.add.existing(this.gates)
@@ -113,6 +115,7 @@ export default class extends Phaser.State {
       let playerHitWasher = this.game.physics.arcade.collide(this.player, this.washer, this.playerHitWasherTrigger, null, this)
       let playerHitGates = this.game.physics.arcade.collide(this.player, this.gates, this.playerHitGatesTrigger, null, this)
       this.spawnNewGoblin()
+      this.spawnNewEnemies()
 
       for (let i = 0; i < this.max_number_of_players; ++i) {
           this.game.physics.arcade.overlap(this['enemyplayer' + i], this.washer, this.enemyHitWasherTrigger, null, this)
@@ -149,6 +152,9 @@ export default class extends Phaser.State {
           })
           this.game.add.existing(this.washer)
           this.player.wisherpointer.destroy()
+
+          this.score++
+          this.scoreText.setText('Score: ' + this.score)
       }
   }
 
@@ -240,6 +246,25 @@ export default class extends Phaser.State {
           this.game.add.existing(this['enemygoblin' + this.enemygoblins.length])
           this.enemygoblins.push(this['enemygoblin' + this.enemygoblins.length])
       }
+   }
+
+   spawnNewEnemies () {
+       if (this.game.time.now > this.next_enemy_spawn) {
+           for (let i = 0; i < this.max_number_of_players; ++i) {
+               if (!this["enemyplayer" + i].isAlive) {
+                   this["enemyplayer" + i].isAlive = true
+                   this["enemyplayer" + i].health = 3
+                   if (Math.random() < 0.5) {
+                       this["enemyplayer" + i].reset(this.game.world.randomX, 50)
+                   }
+                   else {
+                       this["enemyplayer" + i].reset(this.game.world.randomX, this.game.world.height - 50)
+                   }
+                   this.next_enemy_spawn = this.game.time.now + 200
+                   break
+               }
+           }
+       }
    }
 
   addWishertoObject (object) {
