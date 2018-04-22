@@ -50,7 +50,7 @@ export default class extends Phaser.State {
         game: this.game,
         x: this.world.width,
         y: this.world.centerY,
-        asset: 'mushroom'
+        asset: 'goal'
     })
 
     this.max_number_of_players = 10
@@ -85,10 +85,14 @@ export default class extends Phaser.State {
           x: this.game.world.randomX,
           y: this.game.world.randomY,
           maxhp: 3,
-          asset: 'mushroom',
+          asset: 'goblin',
           player: this.player,
           scene: this
       })
+
+      this["enemygoblin" + i].animations.add('left', [10, 11, 12, 13, 14, 15, 16, 17], 5, true)
+      this["enemygoblin" + i].animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 5, true)
+
       this.game.add.existing(this["enemygoblin" + i])
       this.enemygoblins.push(this['enemygoblin' + i])
     }
@@ -100,6 +104,8 @@ export default class extends Phaser.State {
     this.player.animations.add('left', [0, 1, 2, 3, 4, 5, 6], 3, true)
     this.player.animations.add('right', [7, 8, 9, 10, 11, 12], 3, true)
     this.player.animations.add('hold', [13, 14], 2, true)
+
+    //this.enemygoblins.animations.add('hold', [0, 1, 2, 3, 4, 5, 6], 3, true)
 
   }
 
@@ -183,7 +189,7 @@ export default class extends Phaser.State {
                         game: this.game,
                         x: 300,
                         y: this.world.centerY,
-                        asset: 'mushroom'
+                        asset: 'washer'
                     })
                     this.game.add.existing(this.washer)
                     enemy.wisherpointer.destroy()
@@ -228,7 +234,7 @@ export default class extends Phaser.State {
               x: this.game.world.randomX,
               y: this.game.world.randomY,
               maxhp: 10,
-              asset: 'mushroom',
+              asset: 'goblin',
               player: this.player,
               scene: this
           })
@@ -262,7 +268,7 @@ export default class extends Phaser.State {
    }
 
   addWishertoObject (object) {
-    object.wisherpointer = this.game.add.sprite(object.body.x, object.body.y, 'washer-move')
+    object.wisherpointer = this.game.add.sprite(object.body.x, object.body.y, 'arrow-down')
   }
 
   render() {

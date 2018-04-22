@@ -77,4 +77,18 @@ export default class extends BaseObject {
     updateNextHit () {
         this.nexthit = this.game.time.now + 300
     }
+
+    addAnimation() {
+        if (this.body.velocity.x > 0) {
+            this.animations.play('right')
+        }
+        else {
+            this.animations.play('left')
+        }
+    }   
+
+    update() {
+        this.moveEnemy()
+        this.addAnimation()
+    }
 }
