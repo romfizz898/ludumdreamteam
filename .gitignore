@@ -7,3 +7,5 @@ dist/
 *.log
 /index.html
 build/
+.idea
+src.

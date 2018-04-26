@@ -17,7 +17,7 @@ export default class extends Phaser.State {
   create() {
 
     this.audio = this.add.audio('stadion').loopFull()
-    this.audio = this.add.audio('nhl').loopFull()
+
     this.game.world.setBounds(0, 0, this.game.width, this.game.height)
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -300,7 +300,7 @@ export default class extends Phaser.State {
 
   render() {
     if (__DEV__) {
-      this.game.debug.spriteInfo(this.player, 32, 32)
+      //this.game.debug.spriteInfo(this.player, 32, 32)
     }
   }
 }

@@ -8,6 +8,11 @@ export default class extends Phaser.State {
         backGameOver.scale.x = this.game.width / backGameOver.width
         backGameOver.scale.y = this.game.height / backGameOver.height
         this.audio = this.add.audio('loose').play()
+
+        //this.scoreText = this.game.add.text(0, 0.4 * this.game.height, 'Нажми на стрелку и сыграй еще раз: ',
+        //    { font: '65px Arial', fill: '#212228', align: 'center' })
+
+
         this.scoreText = this.game.add.text(0.7 * this.game.width, 0.6 * this.game.height, 'Current score: ' + localStorage.getItem('score'),
             { font: '45px Arial', fill: '#212228', align: 'center' })
         this.scoreText.fixedToCamera = true
