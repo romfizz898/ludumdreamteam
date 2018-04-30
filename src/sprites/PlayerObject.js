@@ -10,6 +10,7 @@ export default class extends BaseObject {
         this.cursors = cursors
         this.isWasher = false
         this.isAlive = true
+        this.speed = 260
     }
 
     addControls() {
@@ -18,7 +19,7 @@ export default class extends BaseObject {
 
         if (this.cursors.isDown(Phaser.Keyboard.LEFT))
         {
-            this.body.velocity.x = -260
+            this.body.velocity.x = -this.speed
             if (this.hasOwnProperty('wisherpointer')) {
                 this.wisherpointer.x = this.body.x
             }
@@ -26,7 +27,7 @@ export default class extends BaseObject {
         }
         else if (this.cursors.isDown(Phaser.Keyboard.RIGHT))
         {
-            this.body.velocity.x = 260
+            this.body.velocity.x = this.speed
             if (this.hasOwnProperty('wisherpointer')) {
                 this.wisherpointer.x = this.body.x
             }
@@ -34,7 +35,7 @@ export default class extends BaseObject {
 
         if (this.cursors.isDown(Phaser.Keyboard.UP))
         {
-            this.body.velocity.y = -260
+            this.body.velocity.y = -this.speed
             if (this.hasOwnProperty('wisherpointer')) {
                 this.wisherpointer.y = this.body.y - 60
             }
@@ -42,7 +43,7 @@ export default class extends BaseObject {
 
         if (this.cursors.isDown(Phaser.Keyboard.DOWN))
         {
-            this.body.velocity.y = 260
+            this.body.velocity.y = this.speed
             if (this.hasOwnProperty('wisherpointer')) {
                 this.wisherpointer.y = this.body.y - 60
             }

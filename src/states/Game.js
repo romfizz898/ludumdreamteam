@@ -4,7 +4,8 @@ import Phaser from 'phaser'
 import PlayerObject from '../sprites/PlayerObject'
 import Washer from '../sprites/Washer'
 import Gates from '../sprites/Gates'
-import BaseObject from "../sprites/BaseObject"
+import SpeedUpBonusObject from "../sprites/SpeedUpBonusObject"
+import BombBonusObject from "../sprites/BombBonusObject"
 import EnemyPlayer from "../sprites/EnemyPlayer"
 import GoblinObject from "../sprites/GoblinObject"
 
@@ -64,17 +65,23 @@ export default class extends Phaser.State {
 
     this.max_number_of_players = 6
     this.max_number_of_goblins = 5
+    this.max_number_of_bonuses = 5
 
     this.enemygoblins = []
+    this.bonuses = []
+
     this.next_goblin_spawn = 5000
-    this.next_enemy_spawn = 1000
+    this.next_enemy_spawn = 5000
+    this.next_bonus_spawn = 15000
+    this.make_game_faster = 6000
+
 
     for (let i = 0; i < this.max_number_of_players; ++i) {
         this["enemyplayer" + i] = new EnemyPlayer({
             game: this.game,
             x: this.game.world.randomX,
             y: this.game.world.randomY,
-            maxhp: 3,
+            maxhp: 45,
             asset: 'enemy',
             player: this.player,
             scene: this
@@ -106,6 +113,30 @@ export default class extends Phaser.State {
       this.enemygoblins.push(this['enemygoblin' + i])
     }
 
+    for (let i = 0; i < this.max_number_of_bonuses; ++i) {
+      if (Math.random() < 0.9) {
+          this["bonus" + i] = new SpeedUpBonusObject({
+              game: this.game,
+              x: 0.9 * this.game.world.randomX,
+              y: 0.9 * this.game.world.randomY,
+              asset: 'speedup',
+              scene: this
+          })
+      }
+      else {
+          this["bonus" + i] = new BombBonusObject({
+              game: this.game,
+              x: 0.9 * this.game.world.randomX,
+              y: 0.9 * this.game.world.randomY,
+              asset: 'mushroom',
+              scene: this
+          })
+      }
+
+      this.game.add.existing(this["bonus" + i])
+      this.bonuses.push(this['bonus' + i])
+    }
+
     this.game.add.existing(this.player)
     this.game.add.existing(this.washer)
     this.game.add.existing(this.gates)
@@ -122,15 +153,19 @@ export default class extends Phaser.State {
 
   update () {
 
-      let playerHitWasher = this.game.physics.arcade.collide(this.player, this.washer, this.playerHitWasherTrigger, null, this)
-      let playerHitGates = this.game.physics.arcade.collide(this.player, this.gates, this.playerHitGatesTrigger, null, this)
       this.spawnNewGoblin()
       this.spawnNewEnemies()
+      this.spawnNewBonuses()
+      this.speedUpGame()
 
       for (let i = 0; i < this.max_number_of_players; ++i) {
           this.game.physics.arcade.overlap(this['enemyplayer' + i], this.washer, this.enemyHitWasherTrigger, null, this)
           this.game.physics.arcade.overlap(this['enemyplayer' + i], this.gates, this.enemyHitGatesTrigger, null, this)
           this.game.physics.arcade.overlap(this['enemyplayer' + i], this.player, this.playerEnemyCollideTrigger, null, this)
+      }
+
+      for (let i = 0; i < this.max_number_of_bonuses; ++i) {
+          this.game.physics.arcade.overlap(this['bonus' + i], this.player, this.playerHitBonusTrigger, null, this)
       }
 
       for (let i = 0; i < this.enemygoblins.length; ++i) {
@@ -139,6 +174,9 @@ export default class extends Phaser.State {
               this.game.physics.arcade.overlap(this['enemygoblin' + i], this['enemyplayer' + j], this.enemyGoblinCollideTrigger, null, this)
           }
       }
+
+      this.game.physics.arcade.collide(this.player, this.washer, this.playerHitWasherTrigger, null, this)
+      this.game.physics.arcade.collide(this.player, this.gates, this.playerHitGatesTrigger, null, this)
 
       //@todo annimations left-right
       //this.player.animations.play('hold')
@@ -165,6 +203,10 @@ export default class extends Phaser.State {
           this.score++
           this.scoreText.setText('Score: ' + this.score)
       }
+  }
+
+  playerHitBonusTrigger (bonus, player) {
+      bonus.applyBonus(player)
   }
 
     enemyHitWasherTrigger (enemyplayer, washer) {
@@ -250,24 +292,45 @@ export default class extends Phaser.State {
     }
 
     spawnNewGoblin () {
-      if (this.game.time.now > this.next_goblin_spawn && this.enemygoblins.length < this.max_number_of_goblins) {
-          this.next_goblin_spawn = this.game.time.now + 3000
-          this['enemygoblin' + this.enemygoblins.length] = new GoblinObject({
-              game: this.game,
-              x: this.game.world.randomX,
-              y: this.game.world.randomY,
-              maxhp: 10,
-              asset: 'goblin',
-              player: this.player,
-              scene: this
-          })
+      if (this.game.time.now > this.next_goblin_spawn) {
+          if (this.enemygoblins.length < this.max_number_of_goblins) {
+              this.next_goblin_spawn = this.game.time.now + 3000
+              this['enemygoblin' + this.enemygoblins.length] = new GoblinObject({
+                  game: this.game,
+                  x: this.game.world.randomX,
+                  y: this.game.world.randomY,
+                  maxhp: 10,
+                  asset: 'goblin',
+                  player: this.player,
+                  scene: this
+              })
 
-          this['enemygoblin' + this.enemygoblins.length].enemyVelocity =
-              this['enemygoblin' + this.enemygoblins.length].enemyVelocity + this.enemygoblins.length * 10
+              this['enemygoblin' + this.enemygoblins.length].enemyVelocity =
+                  this['enemygoblin' + this.enemygoblins.length].enemyVelocity + this.enemygoblins.length * 10
 
 
-          this.game.add.existing(this['enemygoblin' + this.enemygoblins.length])
-          this.enemygoblins.push(this['enemygoblin' + this.enemygoblins.length])
+              this.game.add.existing(this['enemygoblin' + this.enemygoblins.length])
+              this.enemygoblins.push(this['enemygoblin' + this.enemygoblins.length])
+          }
+          else {
+              for (let i = 0; i < this.max_number_of_goblins; ++i) {
+                  if (!this["enemygoblin" + i].isAlive) {
+                      this["enemygoblin" + i].isAlive = true
+                      if (Math.random() < 0.5) {
+                          this["enemygoblin" + i].reset(this.game.world.randomX, 50)
+                      }
+                      else {
+                          this["enemygoblin" + i].reset(this.game.world.randomX, this.game.world.height - 50)
+                      }
+
+                      this['enemygoblin' + i].enemyVelocity =
+                          this['enemygoblin' + i].enemyVelocity + this.enemygoblins.length * 10
+
+                      this.next_goblin_spawn = this.game.time.now + 3000
+                      break
+                  }
+              }
+          }
       }
    }
 
@@ -276,19 +339,66 @@ export default class extends Phaser.State {
            for (let i = 0; i < this.max_number_of_players; ++i) {
                if (!this["enemyplayer" + i].isAlive) {
                    this["enemyplayer" + i].isAlive = true
-                   this["enemyplayer" + i].health = 3
+                   this["enemyplayer" + i].health = 45
                    if (Math.random() < 0.5) {
                        this["enemyplayer" + i].reset(this.game.world.randomX, 50)
                    }
                    else {
                        this["enemyplayer" + i].reset(this.game.world.randomX, this.game.world.height - 50)
                    }
-                   this.next_enemy_spawn = this.game.time.now + 200
+                   this.next_enemy_spawn = this.game.time.now + 800
                    break
                }
            }
        }
    }
+
+    spawnNewBonuses () {
+        if (this.game.time.now > this.next_bonus_spawn) {
+            for (let i = 0; i < this.max_number_of_bonuses; ++i) {
+                if (!this["bonus" + i].isAlive) {
+                    this["bonus" + i].isAlive = true
+                    if (Math.random() < 0.9) {
+                        this["bonus" + i] = new SpeedUpBonusObject({
+                            game: this.game,
+                            x: 0.9 * this.game.world.randomX,
+                            y: 0.9 * this.game.world.randomY,
+                            asset: 'speedup',
+                            scene: this
+                        })
+                    }
+                    else {
+                        this["bonus" + i] = new BombBonusObject({
+                            game: this.game,
+                            x: 0.9 * this.game.world.randomX,
+                            y: 0.9 * this.game.world.randomY,
+                            asset: 'mushroom',
+                            scene: this
+                        })
+                    }
+                    this.next_bonus_spawn = this.game.time.now + 8000
+                    this.game.add.existing(this["bonus" + i])
+                    this.bonuses.push(this['bonus' + i])
+                    this.game.physics.arcade.overlap(this['bonus' + i], this.player, this.playerHitBonusTrigger, null, this)
+                    break
+                }
+            }
+        }
+    }
+
+    speedUpGame () {
+        if (this.game.time.now > this.make_game_faster) {
+            for (let i = 0; i < this.max_number_of_players; ++i) {
+                this['enemyplayer' + i].enemyVelocity += 6
+            }
+
+            for (let i = 0; i < this.enemygoblins.length; ++i) {
+                this['enemygoblin' + i].enemyVelocity += 4
+            }
+
+            this.make_game_faster = this.game.time.now + 1000
+        }
+    }
 
     updateProgressBar () {
         this.hpProgressBar.scale.x = this.player.health / this.player.maxHealth

@@ -7,7 +7,6 @@ export default class extends Phaser.State {
         let backGameOver = this.game.add.tileSprite(0,0,1920,1080,'gameover')
         backGameOver.scale.x = this.game.width / backGameOver.width
         backGameOver.scale.y = this.game.height / backGameOver.height
-        this.audio = this.add.audio('loose').play()
 
         //this.scoreText = this.game.add.text(0, 0.4 * this.game.height, 'Нажми на стрелку и сыграй еще раз: ',
         //    { font: '65px Arial', fill: '#212228', align: 'center' })

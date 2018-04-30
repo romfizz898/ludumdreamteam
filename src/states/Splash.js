@@ -19,6 +19,7 @@ export default class extends Phaser.State {
     this.load.audio('nhl', ['assets/audio/nhl.mp3'])
 
     this.load.image('mushroom', 'assets/images/mushroom2.png')
+    this.load.image('speedup', 'assets/images/speedup.png')
     this.load.image('field', 'assets/images/main-field.png')
     this.load.image('progress1', 'assets/images/progress_1.png')
     this.load.image('progress2', 'assets/images/progress_2.png')

@@ -14,6 +14,7 @@ export default class extends BaseObject {
         this.body.checkCollision.down = false
         this.nexthit = 100
         this.body.immovable = true
+        this.isAlive = true
 
         this.enemyVelocity = 45
 
