@@ -81,7 +81,7 @@ export default class extends Phaser.State {
             game: this.game,
             x: this.game.world.randomX,
             y: this.game.world.randomY,
-            maxhp: 45,
+            maxhp: 6,
             asset: 'enemy',
             player: this.player,
             scene: this
@@ -339,7 +339,7 @@ export default class extends Phaser.State {
            for (let i = 0; i < this.max_number_of_players; ++i) {
                if (!this["enemyplayer" + i].isAlive) {
                    this["enemyplayer" + i].isAlive = true
-                   this["enemyplayer" + i].health = 45
+                   this["enemyplayer" + i].health = 6
                    if (Math.random() < 0.5) {
                        this["enemyplayer" + i].reset(this.game.world.randomX, 50)
                    }
